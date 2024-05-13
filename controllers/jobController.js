@@ -1,4 +1,4 @@
-const Job = require('../models/Job');
+const Job = require('../models/founder');
 
 
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
         const jobId = req.params.id;
         try{
             await Job.findByIdandDelete(jobId);
-            res.status(200).json({ status: true, messageL:' Job Deleted successfully'});
+            res.status(200).json({ status: true, message: 'Job Deleted successfully'});
 
         }catch(error){
             res.status(500).json(error);
@@ -44,12 +44,55 @@ module.exports = {
     getJob: async(req, res) => {
         const jobId = req.params.id;
         try{
-          const job = await Job.findById({_id: jobI}, {createdAt: 0, updateAt: 0, __V: 0});
-          res.status(500). json(error); 
+          const job = await Job.findById({_id: jobId}, {createdAt: 0, updateAt: 0, __V: 0});
+          res.status(200). json(job); 
         }catch(error){
             res.status(500).json(error);
         }
 
-    },     
+    },   
     
+    getAllJobs: async(req, res) => {
+        const recent = req.params.new;
+        try{
+            let jobs; 
+
+        if(recent){
+            jobs = await Job.find({},{createdAt: 0, updatedAt: 0}).sort({createdAt: -1}).limit(2)
+        }else{
+            jobs = await Job.find({},{createdAt: 0, updatedAt: 0})
+        }
+
+        res.status(200).json(jobs)
+
+        }catch(error){
+            res.status(500).json(error);
+        }
+    },
+
+    
+    searchJobs: async (req, res) => {
+        console.log(req.params.key);
+        try {
+            const results = await Job.aggregate([
+                {
+                  $search: {
+                    index: "jobsearch1",
+                    text: {
+                      query: "Miami",
+                      path: {
+                        wildcard: "*"
+                      }
+                    }
+                  }
+                }
+              ]);
+    
+            res.status(200).json(results);
+        } catch (error) {
+            res.status(500).json(error); 
+        }
+    }
+    
+
 };
