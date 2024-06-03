@@ -8,8 +8,10 @@ const bodyParser = require('body-parser')
 
 dotenv.config();
 
- mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log('connnected to Startup-Sphere Database'))
+const mongoUrl = 'mongodb+srv://AbbasAliTaqvi:abbasali7460@startup-sphere.n0g7znl.mongodb.net/StartUp-Sphere'
+
+ mongoose.connect(process.env.MONGO_URL || mongoUrl)
+    .then(() => console.log('connnected to Startup-Sphere Database ${}'))
     .catch((err) => console.log(err));
 
 app.use(bodyParser.json())
