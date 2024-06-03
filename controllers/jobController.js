@@ -15,13 +15,12 @@ module.exports = {
         }
 
     },
-
     updateJob:  async (req, res) =>{
         const jobId = req.params.id;
         const updated =req.body;
         try {
-            const updatedJon = await Job.findByIdandUpdate(jobId, updated, {new: true});
-            if(!updateJob){
+            const updatedJob = await Job.findByIdAndUpdate(jobId, updated, {new: true});
+            if(!updatedJob){
                 return res.status(404).json({status: false, message: 'Job not found.'});
             }
             res.status(200).json({status: true, message: 'Job updated succcessfully'});
@@ -79,7 +78,7 @@ module.exports = {
                   $search: {
                     index: "jobsearch1",
                     text: {
-                      query: "Miami",
+                      query: req.params.key,
                       path: {
                         wildcard: "*"
                       }
